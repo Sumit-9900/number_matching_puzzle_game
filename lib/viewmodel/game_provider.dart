@@ -20,7 +20,6 @@ class GameProvider extends ChangeNotifier {
   bool _isGameRunning = false;
   int? _selectedIndex;
   final bool _isMatchingCellVisible = true;
-  bool _isError = false;
 
   // Getters
   Difficulty get currentDifficulty => _currentDifficulty;
@@ -32,7 +31,6 @@ class GameProvider extends ChangeNotifier {
   bool get isGameRunning => _isGameRunning;
   int? get selectedIndex => _selectedIndex;
   bool get isMatchingCellVisible => _isMatchingCellVisible;
-  bool get isError => _isError;
 
   GameProvider() {
     _initializeLevel(Difficulty.easy);
@@ -117,7 +115,17 @@ class GameProvider extends ChangeNotifier {
           updateScore(10);
         } else {
           firstCell.isHighlighted = false;
-          _isError = true;
+          firstCell.showError = true;
+          secondCell.showError = true;
+          notifyListeners();
+
+          // clear error flags after 1200ms so it can re-trigger next time
+          Future.delayed(const Duration(milliseconds: 1200), () {
+            if (!hasListeners) return;
+            firstCell.showError = false;
+            secondCell.showError = false;
+            notifyListeners();
+          });
         }
         _selectedIndex = null;
       }
