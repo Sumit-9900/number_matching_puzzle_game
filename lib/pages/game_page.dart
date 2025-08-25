@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:number_matching_puzzle_game/core/enums/difficulty.dart';
 import 'package:number_matching_puzzle_game/core/theme/app_colors.dart';
+import 'package:number_matching_puzzle_game/core/utils/show_celebration.dart';
 import 'package:number_matching_puzzle_game/models/game_cell.dart';
 import 'package:number_matching_puzzle_game/viewmodel/game_provider.dart';
 import 'package:number_matching_puzzle_game/widgets/game_grid.dart';
@@ -13,38 +14,47 @@ class GamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.scaffoldBgColor1, AppColors.scaffoldBgColor2],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Consumer<GameProvider>(
-            builder: (context, gameProvider, child) {
-              final currentDifficulty = gameProvider.currentDifficulty;
-              final currentLevelConfig = gameProvider.levelConfig;
-              final cells = gameProvider.cells;
-              final isGameStarted = gameProvider.isGameRunning;
-              final remainingTime = gameProvider.remainingTime;
-              final remainingTimeInMinutes =
-                  '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
-              final backgroundColorOfTimeLeft = remainingTime.inSeconds < 30
-                  ? Colors.red
-                  : remainingTime.inSeconds < 60
-                  ? Colors.orange
-                  : Colors.green;
-              final addRowCondition =
-                  isGameStarted &&
-                  (gameProvider.rowsAdded <
-                      (currentLevelConfig!.gridSize -
-                          currentLevelConfig.initialFilledRows));
+    return Consumer<GameProvider>(
+      builder: (context, gameProvider, child) {
+        final currentDifficulty = gameProvider.currentDifficulty;
+        final currentLevelConfig = gameProvider.levelConfig;
+        final cells = gameProvider.cells;
+        final isGameStarted = gameProvider.isGameRunning;
+        final remainingTime = gameProvider.remainingTime;
+        final remainingTimeInMinutes =
+            '${remainingTime.inMinutes}:${(remainingTime.inSeconds % 60).toString().padLeft(2, '0')}';
+        final backgroundColorOfTimeLeft = remainingTime.inSeconds < 30
+            ? Colors.red
+            : remainingTime.inSeconds < 60
+            ? Colors.orange
+            : Colors.green;
+        final addRowCondition =
+            isGameStarted &&
+            (gameProvider.rowsAdded <
+                (currentLevelConfig!.gridSize -
+                    currentLevelConfig.initialFilledRows));
 
-              return Column(
+        if (gameProvider.isGameCompleted) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showCelebration(context);
+          });
+        }
+
+        return Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.scaffoldBgColor1,
+                  AppColors.scaffoldBgColor2,
+                ],
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
                 children: [
                   const SizedBox(height: 30),
 
@@ -168,11 +178,11 @@ class GamePage extends StatelessWidget {
                     ),
                   ),
                 ],
-              );
-            },
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

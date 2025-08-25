@@ -20,6 +20,7 @@ class GameProvider extends ChangeNotifier {
   bool _isGameRunning = false;
   int? _selectedIndex;
   final bool _isMatchingCellVisible = true;
+  bool _isGameCompleted = false;
 
   // Getters
   Difficulty get currentDifficulty => _currentDifficulty;
@@ -31,6 +32,7 @@ class GameProvider extends ChangeNotifier {
   bool get isGameRunning => _isGameRunning;
   int? get selectedIndex => _selectedIndex;
   bool get isMatchingCellVisible => _isMatchingCellVisible;
+  bool get isGameCompleted => _isGameCompleted;
 
   GameProvider() {
     _initializeLevel(Difficulty.easy);
@@ -73,6 +75,7 @@ class GameProvider extends ChangeNotifier {
   void startGame() {
     if (_isGameRunning) return;
     _isGameRunning = true;
+    _isGameCompleted = false;
     _remainingTime = _levelConfig!.timeLimit;
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -142,7 +145,15 @@ class GameProvider extends ChangeNotifier {
 
   // Called when user presses "Reset"
   void resetGame() {
+    _isGameCompleted = false;
     _initializeLevel(_currentDifficulty);
+    notifyListeners();
+  }
+
+  void resetToLevel1() {
+    _isGameCompleted = false;
+    _initializeLevel(Difficulty.easy);
+    notifyListeners();
   }
 
   // Update score (e.g., when matches are made in puzzle logic)
@@ -166,6 +177,7 @@ class GameProvider extends ChangeNotifier {
         // Game completed 🎉
         _isGameRunning = false;
         _timer?.cancel();
+        _isGameCompleted = true;
         notifyListeners();
       }
     }
