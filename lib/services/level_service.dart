@@ -14,7 +14,7 @@ class LevelService {
           gridSize: 5,
           initialFilledRows: 3,
           maxAddRows: 3,
-          targetScore: 50,
+          targetScore: 25,
           targetMatchPercentage: 0.8,
         );
       case Difficulty.medium:
@@ -23,7 +23,7 @@ class LevelService {
           gridSize: 6,
           initialFilledRows: 4,
           maxAddRows: 2,
-          targetScore: 100,
+          targetScore: 50,
           targetMatchPercentage: 0.85,
         );
       case Difficulty.hard:
@@ -32,7 +32,7 @@ class LevelService {
           gridSize: 7,
           initialFilledRows: 4,
           maxAddRows: 1,
-          targetScore: 200,
+          targetScore: 100,
           targetMatchPercentage: 0.9,
         );
     }

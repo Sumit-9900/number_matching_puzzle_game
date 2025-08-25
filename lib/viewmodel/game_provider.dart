@@ -83,8 +83,8 @@ class GameProvider extends ChangeNotifier {
         timer.cancel();
         _isGameRunning = false;
         notifyListeners();
-        _checkLevelCompletion();
       }
+      _checkLevelCompletion();
     });
 
     notifyListeners();
@@ -112,15 +112,15 @@ class GameProvider extends ChangeNotifier {
           firstCell.isMatched = true;
           secondCell.isMatched = true;
           firstCell.isHighlighted = false;
-          updateScore(10);
+          updateScore(firstCell.number, secondCell.number);
         } else {
           firstCell.isHighlighted = false;
           firstCell.showError = true;
           secondCell.showError = true;
           notifyListeners();
 
-          // clear error flags after 1200ms so it can re-trigger next time
-          Future.delayed(const Duration(milliseconds: 1200), () {
+          // clear error flags after 1s so it can re-trigger next time
+          Future.delayed(const Duration(seconds: 1), () {
             if (!hasListeners) return;
             firstCell.showError = false;
             secondCell.showError = false;
@@ -146,10 +146,13 @@ class GameProvider extends ChangeNotifier {
   }
 
   // Update score (e.g., when matches are made in puzzle logic)
-  void updateScore(int points) {
-    _score += points;
+  void updateScore(int first, int second) {
+    if (first + second == 10) {
+      _score += 5;
+    } else if (first == second) {
+      _score += 3;
+    }
     notifyListeners();
-    _checkLevelCompletion();
   }
 
   void _checkLevelCompletion() {
