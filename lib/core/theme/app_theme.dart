@@ -9,6 +9,7 @@ class AppTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         backgroundColor: WidgetStatePropertyAll(AppColors.deepPurpleColor),
+        foregroundColor: WidgetStatePropertyAll(AppColors.whiteColor),
         textStyle: WidgetStatePropertyAll(
           GoogleFonts.poppins(
             fontSize: 22,

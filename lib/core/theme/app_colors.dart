@@ -5,4 +5,6 @@ class AppColors {
   static const scaffoldBgColor2 = Colors.black;
   static const deepPurpleColor = Colors.deepPurple;
   static const whiteColor = Colors.white;
+  static const greyColor = Colors.grey;
+  static const highlightColor = Colors.orange;
 }
