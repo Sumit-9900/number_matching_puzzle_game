@@ -41,145 +41,180 @@ class GamePage extends StatelessWidget {
         }
 
         return Scaffold(
-          body: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.scaffoldBgColor1,
-                  AppColors.scaffoldBgColor2,
-                ],
+          body: Stack(
+            children: [
+              // Full-screen gradient background
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppColors.scaffoldBgColor1,
+                      AppColors.scaffoldBgColor2,
+                    ],
+                  ),
+                ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 30),
 
-                  // Difficulty + Timer
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  child: Column(
                     children: [
-                      Text(
-                        difficultyString(currentDifficulty),
-                        style: GoogleFonts.poppins(
-                          color: AppColors.whiteColor,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Icon(CupertinoIcons.stopwatch_fill),
-                          const SizedBox(width: 5),
-                          Text(
-                            // show live remaining time from provider
-                            remainingTimeInMinutes,
-                            style: GoogleFonts.poppins(
-                              color: isGameStarted
-                                  ? backgroundColorOfTimeLeft
-                                  : AppColors.whiteColor,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
-                            ),
+                      // 🔹 Scrollable section
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 30),
+
+                              // Difficulty + Timer
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    difficultyString(currentDifficulty),
+                                    style: GoogleFonts.poppins(
+                                      color: AppColors.whiteColor,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Icon(CupertinoIcons.stopwatch_fill),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        remainingTimeInMinutes,
+                                        style: GoogleFonts.poppins(
+                                          color: isGameStarted
+                                              ? backgroundColorOfTimeLeft
+                                              : AppColors.whiteColor,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              // Score
+                              Text(
+                                'Score: ${gameProvider.score}/${currentLevelConfig!.targetScore}',
+                                style: GoogleFonts.orbitron(
+                                  color: Colors.amber,
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              // Game Grid
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount:
+                                          currentLevelConfig.gridSize,
+                                    ),
+                                itemCount:
+                                    currentLevelConfig.gridSize *
+                                    currentLevelConfig.gridSize,
+                                itemBuilder: (context, index) {
+                                  final hasNumber = index < cells.length;
+                                  final cell = hasNumber
+                                      ? cells[index]
+                                      : GameCell(number: 0);
+
+                                  return GameGrid(
+                                    index: index,
+                                    cell: cell,
+                                    gameProvider: gameProvider,
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Score
-                  Text(
-                    'Score: ${gameProvider.score}/${currentLevelConfig!.targetScore}',
-                    style: GoogleFonts.orbitron(
-                      color: Colors.amber,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Game Grid
-                  Expanded(
-                    child: GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: currentLevelConfig.gridSize,
-                      ),
-                      itemCount:
-                          currentLevelConfig.gridSize *
-                          currentLevelConfig.gridSize,
-                      itemBuilder: (context, index) {
-                        final hasNumber = index < cells.length;
-                        final cell = hasNumber
-                            ? cells[index]
-                            : GameCell(number: 0); // 👈 empty placeholder cell
-
-                        return GameGrid(
-                          index: index,
-                          cell: cell,
-                          gameProvider: gameProvider,
-                        );
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isGameStarted
-                              ? AppColors.greyColor
-                              : AppColors.deepPurpleColor,
-                          foregroundColor: isGameStarted
-                              ? const Color.fromARGB(108, 255, 255, 255)
-                              : AppColors.whiteColor,
                         ),
-                        onPressed: isGameStarted
-                            ? () {}
-                            : () => gameProvider.startGame(),
-                        child: Text('Start'),
                       ),
-                      ElevatedButton(
-                        onPressed: () => gameProvider.resetGame(),
-                        child: Text('Reset'),
+
+                      // 🔹 Fixed bottom buttons
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16, bottom: 20),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isGameStarted
+                                        ? AppColors.greyColor
+                                        : AppColors.deepPurpleColor,
+                                    foregroundColor: isGameStarted
+                                        ? const Color.fromARGB(
+                                            108,
+                                            255,
+                                            255,
+                                            255,
+                                          )
+                                        : AppColors.whiteColor,
+                                  ),
+                                  onPressed: isGameStarted
+                                      ? null
+                                      : () => gameProvider.startGame(),
+                                  child: const Text('Start'),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => gameProvider.resetGame(),
+                                  child: const Text('Reset'),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 15),
+
+                            // Add Row Button
+                            GestureDetector(
+                              onTap: addRowCondition
+                                  ? () => gameProvider.addRow()
+                                  : null,
+                              child: CircleAvatar(
+                                backgroundColor: addRowCondition
+                                    ? AppColors.deepPurpleColor
+                                    : AppColors.greyColor,
+                                radius: 30,
+                                child: Icon(
+                                  Icons.add,
+                                  color: addRowCondition
+                                      ? AppColors.whiteColor
+                                      : const Color.fromARGB(
+                                          108,
+                                          255,
+                                          255,
+                                          255,
+                                        ),
+                                  size: 40,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: 20),
-
-                  // Add Row Button
-                  GestureDetector(
-                    onTap: addRowCondition
-                        ? () => gameProvider.addRow()
-                        : () {},
-                    child: CircleAvatar(
-                      backgroundColor: addRowCondition
-                          ? AppColors.deepPurpleColor
-                          : AppColors.greyColor,
-                      radius: 30,
-                      child: Icon(
-                        Icons.add,
-                        color: addRowCondition
-                            ? AppColors.whiteColor
-                            : const Color.fromARGB(108, 255, 255, 255),
-                        size: 40,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         );
       },
