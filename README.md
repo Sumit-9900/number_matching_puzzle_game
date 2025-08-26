@@ -155,6 +155,11 @@ dependencies:
    - Reduce animation complexity on lower-end devices
    - Optimize grid rendering for larger grid sizes
 
+## 🎥 Gameplay Recording
+A short gameplay demo showing a typical round: starting the game, making a few matches (including a sum-to-10), an invalid selection with a red flash, and progressing toward the target score.
+
+[Watch the gameplay](https://www.loom.com/share/7831a940013241528803d0fb020ea12e)
+
 ## Conclusion
 
 Enjoy a focused, fast-paced challenge—scan smart, match efficiently, and beat the clock. Have fun!
