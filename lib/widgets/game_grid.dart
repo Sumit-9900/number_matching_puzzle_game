@@ -5,6 +5,7 @@ import 'package:number_matching_puzzle_game/core/utils/show_snackbar.dart';
 import 'package:number_matching_puzzle_game/models/game_cell.dart';
 import 'package:number_matching_puzzle_game/viewmodel/game_provider.dart';
 
+// Renders a single grid cell with highlight, match fade, and error flash visuals.
 class GameGrid extends StatelessWidget {
   final int index;
   final GameCell cell;
@@ -23,6 +24,7 @@ class GameGrid extends StatelessWidget {
     if (cell.isHighlighted) baseBorderColor = AppColors.highlightColor;
 
     return GestureDetector(
+      // Disable taps on empty cells or when game hasn't started.
       onTap: cell.number == 0
           ? null
           : gameProvider.isGameRunning

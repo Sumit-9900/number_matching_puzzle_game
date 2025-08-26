@@ -1,3 +1,4 @@
+// Entry point: sets orientation, theme, and wires up GameProvider.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:number_matching_puzzle_game/core/theme/app_theme.dart';

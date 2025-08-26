@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:number_matching_puzzle_game/core/enums/difficulty.dart';
 import 'package:number_matching_puzzle_game/models/level_config.dart';
 
+// NumberGenerator: creates initial grid numbers and utilities for row additions.
 class NumberGenerator {
   static final NumberGenerator _instance = NumberGenerator._internal();
   factory NumberGenerator() => _instance;

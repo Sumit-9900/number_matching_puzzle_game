@@ -41,9 +41,9 @@ class GamePage extends StatelessWidget {
         }
 
         return Scaffold(
+          // Background gradient sits below content and remains visible through SafeArea.
           body: Stack(
             children: [
-              // Full-screen gradient background
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -57,6 +57,7 @@ class GamePage extends StatelessWidget {
                 ),
               ),
 
+              // Foreground content
               SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -65,7 +66,7 @@ class GamePage extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      // 🔹 Scrollable section
+                      // Scrollable main section
                       Expanded(
                         child: SingleChildScrollView(
                           child: Column(
@@ -118,7 +119,7 @@ class GamePage extends StatelessWidget {
 
                               const SizedBox(height: 20),
 
-                              // Game Grid
+                              // Game Grid (non-scrollable inside scroller)
                               GridView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
@@ -148,7 +149,7 @@ class GamePage extends StatelessWidget {
                         ),
                       ),
 
-                      // 🔹 Fixed bottom buttons
+                      // Fixed bottom controls
                       Padding(
                         padding: const EdgeInsets.only(top: 16, bottom: 20),
                         child: Column(

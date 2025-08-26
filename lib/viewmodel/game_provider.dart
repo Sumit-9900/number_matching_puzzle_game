@@ -1,3 +1,4 @@
+// GameProvider: central state manager for gameplay lifecycle, grid, scoring, and timer.
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:number_matching_puzzle_game/core/enums/difficulty.dart';
@@ -71,7 +72,7 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Called when user presses "Start"
+  // startGame: starts countdown timer and enables interactions.
   void startGame() {
     if (_isGameRunning) return;
     _isGameRunning = true;
@@ -93,6 +94,7 @@ class GameProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // selectCell: handles selection/match flow and triggers per-cell error flash.
   void selectCell(int index) {
     if (index < 0 || index >= _cells.length) return;
     if (_cells[index].isMatched) return;
@@ -118,11 +120,11 @@ class GameProvider extends ChangeNotifier {
           updateScore(firstCell.number, secondCell.number);
         } else {
           firstCell.isHighlighted = false;
+          // Trigger per-cell error flash (auto-clears after delay)
           firstCell.showError = true;
           secondCell.showError = true;
           notifyListeners();
 
-          // clear error flags after 1s so it can re-trigger next time
           Future.delayed(const Duration(seconds: 1), () {
             if (!hasListeners) return;
             firstCell.showError = false;
@@ -143,7 +145,17 @@ class GameProvider extends ChangeNotifier {
         (firstCell.number + secondCell.number == 10);
   }
 
-  // Called when user presses "Reset"
+  // updateScore: adds points based on match rule (same or sum-to-10).
+  void updateScore(int first, int second) {
+    if (first + second == 10) {
+      _score += 5;
+    } else if (first == second) {
+      _score += 3;
+    }
+    notifyListeners();
+  }
+
+  // resetGame: reinitialize current level state.
   void resetGame() {
     _isGameCompleted = false;
     _initializeLevel(_currentDifficulty);
@@ -153,16 +165,6 @@ class GameProvider extends ChangeNotifier {
   void resetToLevel1() {
     _isGameCompleted = false;
     _initializeLevel(Difficulty.easy);
-    notifyListeners();
-  }
-
-  // Update score (e.g., when matches are made in puzzle logic)
-  void updateScore(int first, int second) {
-    if (first + second == 10) {
-      _score += 5;
-    } else if (first == second) {
-      _score += 3;
-    }
     notifyListeners();
   }
 
