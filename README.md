@@ -139,23 +139,6 @@ dependencies:
   audioplayers: ^6.5.0      # Play Audio
 ```
 
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **App Won't Start**
-   - Ensure Flutter SDK is properly installed
-   - Run `flutter doctor` to check for issues
-   - Clear cache with `flutter clean && flutter pub get`
-
-2. **Animation Issues**
-   - Check if device supports the animation features
-   - Verify animation controllers are properly disposed
-
-3. **Performance Issues**
-   - Reduce animation complexity on lower-end devices
-   - Optimize grid rendering for larger grid sizes
-
 ## 🎥 Gameplay Recording
 A short gameplay demo showing a typical round: starting the game, making a few matches (including a sum-to-10), an invalid selection with a red flash, and progressing toward the target score.
 
