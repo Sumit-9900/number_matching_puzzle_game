@@ -10,9 +10,10 @@ The Number Matching Puzzle Game is an engaging puzzle experience that tests your
 
 - **Multiple Difficulty Levels**: Easy, Medium, and Hard with progressively challenging configurations
 - **Dynamic Scoring System**: Different points for identical matches (3 points) vs. sum-to-10 matches (5 points)
-- **Real-time Timer**: Countdown timer with color-coded urgency indicators
+- **Real-time Timer**: Countdown timer with color-coded urgency indicators and a ticking sound in the final seconds
+- **Audio Feedback**: Button click, success, error, and quick-win sounds for satisfying feedback
 - **Visual Feedback**: Red flash animation for incorrect selections
-- **Progress Tracking**: Score display and level completion detection
+- **Progress Tracking**: Score display and level completion detection with a celebration animation
 - **Responsive Design**: Beautiful UI with smooth animations and modern styling
 - **Add Row Mechanic**: Strategic gameplay element to add new rows during play
 
@@ -27,11 +28,11 @@ The Number Matching Puzzle Game is an engaging puzzle experience that tests your
 4. **Score Points**: 
    - Identical matches: 3 points
    - Sum-to-10 matches: 5 points
-5. **Avoid Errors**: Incorrect selections trigger a red flash animation on the unmatched cells
+5. **Avoid Errors**: Incorrect selections trigger a red flash animation on the unmatched cells and an error sound
 
 ### Strategic Elements
 - **Add Row**: Use the "+" button to add new rows when available (limited by difficulty)
-- **Time Management**: Complete the level before time runs out
+- **Time Management**: Complete the level before time runs out; a ticking sound plays in the last 9 seconds
 - **Score Targets**: Reach the target score to advance to the next level
 
 ## 🏗️ Architecture
@@ -52,7 +53,8 @@ lib/
 │   └── level_config.dart            # Level configuration parameters
 ├── services/
 │   ├── level_service.dart           # Difficulty level management
-│   └── number_generator.dart        # Random number generation for grids
+│   ├── number_generator.dart        # Random number generation for grids
+│   └── audio_service.dart           # Centralized audio playback (click, error, success, ticking)
 ├── viewmodel/
 │   └── game_provider.dart           # Game state management with Provider
 ├── widgets/
@@ -66,14 +68,13 @@ lib/
 
 #### State Management
 - **Provider Pattern**: Uses `ChangeNotifierProvider` for reactive state management
-- **GameProvider**: Central state manager handling game logic, scoring, and UI updates
-- **Reactive UI**: Widgets automatically update when game state changes
+- **GameProvider**: Central state manager handling game logic, scoring, timer, and audio triggers
 
 #### Game Logic
 - **Cell Selection**: Two-phase selection system with visual highlighting
 - **Match Validation**: Checks for identical numbers or sum-to-10 pairs
-- **Error Handling**: Per-cell error states with visual feedback
-- **Timer Management**: Real-time countdown with automatic game completion
+- **Error Handling**: Per-cell error states with visual and audio feedback
+- **Timer Management**: Real-time countdown; plays ticking audio in final seconds; level completion detection with celebration
 
 #### UI/UX Design
 - **Dark Theme**: Modern dark interface with gradient backgrounds
@@ -133,9 +134,9 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^6.1.5+1        # State management
-  google_fonts: ^6.3.0      # Typography
   cupertino_icons: ^1.0.8   # Icons
   confetti: ^0.8.0          # Celebration Animation
+  audioplayers: ^6.5.0      # Play Audio
 ```
 
 ## 🐛 Troubleshooting
@@ -158,7 +159,7 @@ dependencies:
 ## 🎥 Gameplay Recording
 A short gameplay demo showing a typical round: starting the game, making a few matches (including a sum-to-10), an invalid selection with a red flash, and progressing toward the target score.
 
-[Watch the gameplay](https://www.loom.com/share/7831a940013241528803d0fb020ea12e)
+[Watch the gameplay](https://www.loom.com/share/285971fcf1114330a9fc71119cfb7da5)
 
 ## Conclusion
 
