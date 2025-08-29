@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:number_matching_puzzle_game/core/theme/app_colors.dart';
 import 'package:number_matching_puzzle_game/viewmodel/game_provider.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +32,8 @@ void showCelebration(BuildContext context) {
 
           Text(
             "🎉 Congratulations! 🎉",
-            style: GoogleFonts.poppins(
+            style: TextStyle(
+              fontFamily: 'Poppins',
               fontSize: 28,
               fontWeight: FontWeight.bold,
               color: AppColors.highlightColor,

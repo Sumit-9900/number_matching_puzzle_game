@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:number_matching_puzzle_game/core/theme/app_colors.dart';
 
 class AppTheme {
@@ -11,7 +10,8 @@ class AppTheme {
         backgroundColor: WidgetStatePropertyAll(AppColors.deepPurpleColor),
         foregroundColor: WidgetStatePropertyAll(AppColors.whiteColor),
         textStyle: WidgetStatePropertyAll(
-          GoogleFonts.poppins(
+          TextStyle(
+            fontFamily: 'Poppins',
             fontSize: 22,
             fontWeight: FontWeight.w600,
             color: AppColors.whiteColor,

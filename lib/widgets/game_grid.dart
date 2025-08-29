@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:number_matching_puzzle_game/core/theme/app_colors.dart';
 import 'package:number_matching_puzzle_game/core/utils/show_snackbar.dart';
 import 'package:number_matching_puzzle_game/models/game_cell.dart';
+import 'package:number_matching_puzzle_game/services/audio_service.dart';
 import 'package:number_matching_puzzle_game/viewmodel/game_provider.dart';
 
 // Renders a single grid cell with highlight, match fade, and error flash visuals.
@@ -20,6 +20,7 @@ class GameGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AudioService audioService = AudioService();
     Color baseBorderColor = AppColors.deepPurpleColor;
     if (cell.isHighlighted) baseBorderColor = AppColors.highlightColor;
 
@@ -29,7 +30,10 @@ class GameGrid extends StatelessWidget {
           ? null
           : gameProvider.isGameRunning
           ? () => gameProvider.selectCell(index)
-          : () => showSnakbar(context, title: 'Please start the game first!'),
+          : () {
+              audioService.playErrorSound();
+              showSnakbar(context, title: 'Please start the game first!');
+            },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -60,7 +64,8 @@ class GameGrid extends StatelessWidget {
                 duration: const Duration(milliseconds: 800),
                 child: Text(
                   cell.number.toString(),
-                  style: GoogleFonts.orbitron(
+                  style: TextStyle(
+                    fontFamily: 'Orbitron',
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
                     color: cell.showError

@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:number_matching_puzzle_game/core/enums/difficulty.dart';
 import 'package:number_matching_puzzle_game/models/game_cell.dart';
 import 'package:number_matching_puzzle_game/models/level_config.dart';
+import 'package:number_matching_puzzle_game/services/audio_service.dart';
 import 'package:number_matching_puzzle_game/services/level_service.dart';
 import 'package:number_matching_puzzle_game/services/number_generator.dart';
 
 class GameProvider extends ChangeNotifier {
   final LevelService _levelService = LevelService();
   final NumberGenerator _numberGenerator = NumberGenerator();
+  final AudioService _audioService = AudioService();
 
   Difficulty _currentDifficulty = Difficulty.easy;
   LevelConfig? _levelConfig;
@@ -62,6 +64,8 @@ class GameProvider extends ChangeNotifier {
       return;
     }
 
+    _audioService.playButtonClick();
+
     final newNumbers = _numberGenerator.generateAddRowNumbers(
       _levelConfig!, // uses gridSize internally
       _cells.map((c) => c.number).toList(), // existing numbers on the board
@@ -78,10 +82,15 @@ class GameProvider extends ChangeNotifier {
     _isGameRunning = true;
     _isGameCompleted = false;
     _remainingTime = _levelConfig!.timeLimit;
+    _audioService.playButtonClick();
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_remainingTime.inSeconds > 0) {
         _remainingTime -= const Duration(seconds: 1);
+        if (_remainingTime.inSeconds == 9
+        ) {
+          _audioService.playClockTickingSound();
+        }
         notifyListeners();
       } else {
         timer.cancel();
@@ -102,10 +111,12 @@ class GameProvider extends ChangeNotifier {
     if (_selectedIndex == null) {
       _selectedIndex = index;
       _cells[index].isHighlighted = true;
+      _audioService.playButtonClick();
     } else {
       if (_selectedIndex == index) {
         _cells[index].isHighlighted = false;
         _selectedIndex = null;
+        _audioService.playButtonClick();
       } else {
         final firstIndex = _selectedIndex;
         final secondIndex = index;
@@ -118,11 +129,13 @@ class GameProvider extends ChangeNotifier {
           secondCell.isMatched = true;
           firstCell.isHighlighted = false;
           updateScore(firstCell.number, secondCell.number);
+          _audioService.playSuccessSound();
         } else {
           firstCell.isHighlighted = false;
           // Trigger per-cell error flash (auto-clears after delay)
           firstCell.showError = true;
           secondCell.showError = true;
+          _audioService.playErrorSound();
           notifyListeners();
 
           Future.delayed(const Duration(seconds: 1), () {
@@ -157,6 +170,7 @@ class GameProvider extends ChangeNotifier {
 
   // resetGame: reinitialize current level state.
   void resetGame() {
+    _audioService.playButtonClick();
     _isGameCompleted = false;
     _initializeLevel(_currentDifficulty);
     notifyListeners();
@@ -171,6 +185,7 @@ class GameProvider extends ChangeNotifier {
   void _checkLevelCompletion() {
     if (_score >= _levelConfig!.targetScore) {
       // Advance to next level
+      _audioService.playQuickWinSound();
       if (_currentDifficulty == Difficulty.easy) {
         _initializeLevel(Difficulty.medium);
       } else if (_currentDifficulty == Difficulty.medium) {
@@ -188,6 +203,7 @@ class GameProvider extends ChangeNotifier {
   @override
   void dispose() {
     _timer?.cancel();
+    _audioService.dispose();
     super.dispose();
   }
 }

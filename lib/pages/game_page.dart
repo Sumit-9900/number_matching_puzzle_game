@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:number_matching_puzzle_game/core/enums/difficulty.dart';
 import 'package:number_matching_puzzle_game/core/theme/app_colors.dart';
 import 'package:number_matching_puzzle_game/core/utils/show_celebration.dart';
@@ -80,7 +79,8 @@ class GamePage extends StatelessWidget {
                                 children: [
                                   Text(
                                     difficultyString(currentDifficulty),
-                                    style: GoogleFonts.poppins(
+                                    style: TextStyle(
+                                      fontFamily: 'Poppins',
                                       color: AppColors.whiteColor,
                                       fontSize: 22,
                                       fontWeight: FontWeight.w600,
@@ -92,7 +92,8 @@ class GamePage extends StatelessWidget {
                                       const SizedBox(width: 5),
                                       Text(
                                         remainingTimeInMinutes,
-                                        style: GoogleFonts.poppins(
+                                        style: TextStyle(
+                                          fontFamily: 'Poppins',
                                           color: isGameStarted
                                               ? backgroundColorOfTimeLeft
                                               : AppColors.whiteColor,
@@ -110,7 +111,8 @@ class GamePage extends StatelessWidget {
                               // Score
                               Text(
                                 'Score: ${gameProvider.score}/${currentLevelConfig!.targetScore}',
-                                style: GoogleFonts.orbitron(
+                                style: TextStyle(
+                                  fontFamily: 'Orbitron',
                                   color: Colors.amber,
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
