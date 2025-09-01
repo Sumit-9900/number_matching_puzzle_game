@@ -17,6 +17,7 @@ class GameProvider extends ChangeNotifier {
   LevelConfig? _levelConfig;
   List<GameCell> _cells = [];
   int _rowsAdded = 0;
+  bool _canAddRow = false;
   int _score = 0;
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
@@ -30,6 +31,7 @@ class GameProvider extends ChangeNotifier {
   LevelConfig? get levelConfig => _levelConfig;
   List<GameCell> get cells => _cells;
   int get rowsAdded => _rowsAdded;
+  bool get canAddRow => _canAddRow;
   int get score => _score;
   Duration get remainingTime => _remainingTime;
   bool get isGameRunning => _isGameRunning;
@@ -53,26 +55,41 @@ class GameProvider extends ChangeNotifier {
     _remainingTime = _levelConfig!.timeLimit;
     _isGameRunning = false;
     _timer?.cancel();
+    _canAddRow = false; // Reset add row capability
     notifyListeners();
+  }
+
+  /// Change difficulty level and reset game state
+  void changeDifficulty(Difficulty difficulty) {
+    if (_currentDifficulty != difficulty) {
+      _initializeLevel(difficulty);
+    }
   }
 
   // Called when user presses "Add Row"
   void addRow() {
     if (_levelConfig == null) return;
-    if (_rowsAdded >=
-        (_levelConfig!.gridSize - _levelConfig!.initialFilledRows)) {
+
+    // If already reached max allowed rows → disable addRow
+    if (_rowsAdded >= _levelConfig!.addRows) {
+      _canAddRow = false; // ✅ disable button
+      notifyListeners();
       return;
     }
 
     _audioService.playButtonClick();
 
     final newNumbers = _numberGenerator.generateAddRowNumbers(
-      _levelConfig!, // uses gridSize internally
-      _cells.map((c) => c.number).toList(), // existing numbers on the board
+      _levelConfig!,
+      _cells.map((c) => c.number).toList(),
     );
 
     _cells.addAll(newNumbers.map((n) => GameCell(number: n)));
     _rowsAdded++;
+
+    // Update canAddRow depending on how many rows left
+    _canAddRow = _rowsAdded < _levelConfig!.addRows;
+
     notifyListeners();
   }
 
@@ -81,14 +98,16 @@ class GameProvider extends ChangeNotifier {
     if (_isGameRunning) return;
     _isGameRunning = true;
     _isGameCompleted = false;
+    _rowsAdded = 0;
     _remainingTime = _levelConfig!.timeLimit;
     _audioService.playButtonClick();
+
+    _canAddRow = _levelConfig!.addRows > 0;
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_remainingTime.inSeconds > 0) {
         _remainingTime -= const Duration(seconds: 1);
-        if (_remainingTime.inSeconds == 9
-        ) {
+        if (_remainingTime.inSeconds == 9) {
           _audioService.playClockTickingSound();
         }
         notifyListeners();
@@ -183,7 +202,7 @@ class GameProvider extends ChangeNotifier {
   }
 
   void _checkLevelCompletion() {
-    if (_score >= _levelConfig!.targetScore) {
+    if (_score >= (_levelConfig?.targetScore ?? 0)) {
       // Advance to next level
       _audioService.playQuickWinSound();
       if (_currentDifficulty == Difficulty.easy) {

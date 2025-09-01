@@ -27,11 +27,7 @@ class GamePage extends StatelessWidget {
             : remainingTime.inSeconds < 60
             ? Colors.orange
             : Colors.green;
-        final addRowCondition =
-            isGameStarted &&
-            (gameProvider.rowsAdded <
-                (currentLevelConfig!.gridSize -
-                    currentLevelConfig.initialFilledRows));
+        final addRowCondition = isGameStarted && gameProvider.canAddRow;
 
         if (gameProvider.isGameCompleted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
