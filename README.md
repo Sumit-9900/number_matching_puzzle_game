@@ -99,29 +99,19 @@ lib/
 ### Installation
 
 1. Clone the repository
-   ```bash
-git clone https://github.com/Sumit-9900/number_matching_puzzle_game
-cd number_matching_puzzle_game
+```bash
+   git clone https://github.com/Sumit-9900/number_matching_puzzle_game
+   cd number_matching_puzzle_game
 ```
 2. Install dependencies
-   ```bash
-flutter pub get
+```bash
+   flutter pub get
 ```
 3. Run the application
-   ```bash
-flutter run
+```bash
+   flutter run
 ```
 
-### Dependencies
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  provider: ^6.1.5+1
-  cupertino_icons: ^1.0.8
-  confetti: ^0.8.0
-  audioplayers: ^6.5.0
-```
 
 ## 🎥 Gameplay Demo
 
